@@ -16,7 +16,7 @@ class Bird extends ObjectGame {
     super(imgX, imgY, canvasX, canvasY, imgWidth, imgHeight, canvasWidth, canvasHeight);
     this.countFrame = 13;
     this.currentFrame = 0;
-    this.timeDelayFrame = 70;
+    this.timeDelayFrame = 50;
     this.previousTimeFrame = 0;
     this.fly = 0;
   }
@@ -36,7 +36,7 @@ class Game {
     this.CACTUS_IMG.src = '../img/cactus_img.png';
     this.scrollingFrame = 10;
     this.widthSecondFrame = 0;
-    this.timeDelayFrame = 30;
+    this.timeDelayFrame = 10;
     this.previousTimeFrame = 0;
   }
 
@@ -47,16 +47,43 @@ class Game {
     canvasGame.height = this.SCREEN_HEIGHT;
     document.body.appendChild(canvasGame);
     this.ctx = canvasGame.getContext('2d');
-    document.addEventListener('keydown', game.moveBird);
-    //document.addEventListener('keydown', game.moveBird);
+    document.addEventListener('keydown', game.birdUp);
+    document.addEventListener('keyup', game.birdDown);
   }
 
   createBird() {
     this.bird = new Bird(0, 0, 200, 300, 165, 150, 165, 150);
   }
 
+  moveGame() {
+    requestAnimationFrame(game.moveGame);
+    game.renderGame();
+
+    // check touch floor
+    if (game.bird.canvasY + game.bird.canvasHeight - 20 > game.ctx.canvas.height) {
+      return;
+    }
+
+    if (game.bird.fly !== 1) {
+      game.bird.canvasY += 10;
+    }
+
+    // encounter with wall
+    // if (this.ball.canvasX + this.ball.canvasWidth > this.ctx.canvas.width || this.ball.canvasX < 0) {
+    //   this.ball.dx = -this.ball.dx;
+    //   this.playAudioBeatBall();
+    // }
+
+    // if (this.ball.canvasY + this.ball.canvasHeight > this.ctx.canvas.height) {
+    //   //clearTimeout(this.IDtimer);
+    //   cancelAnimationFrame(this.IDtimer);
+    //   alert('GAME OVER');
+    //   return;
+    // }
+
+  }
+
   renderGame() {
-    requestAnimationFrame(game.renderGame);
     // clear canvas
     game.ctx.clearRect(0, 0, game.ctx.canvas.width, game.ctx.canvas.height);
 
@@ -72,10 +99,6 @@ class Game {
     }
 
     // render bird
-    if (game.bird.fly !== 1) {
-      game.bird.canvasY += 5;
-    }
-
     game.ctx.drawImage(game.BIRD_IMG, game.bird.currentFrame * game.bird.imgWidth, 0,
       game.bird.imgWidth, game.bird.imgHeight, game.bird.canvasX, game.bird.canvasY,
       game.bird.canvasWidth, game.bird.canvasHeight);
@@ -88,54 +111,22 @@ class Game {
     }
   }
 
-  moveBird(e) {
-    if (e.keyCode === 32) {
-      game.bird.fly = 1;
-      game.bird.canvasY -= 70;
+  birdUp(e) {
+    // check touch floor
+    if (game.bird.canvasY - 40 < 0) {
+      return;
     }
 
-    // encounter with wall
-    // if (this.ball.canvasX + this.ball.canvasWidth > this.ctx.canvas.width || this.ball.canvasX < 0) {
-    //   this.ball.dx = -this.ball.dx;
-    //   this.playAudioBeatBall();
-    // }
-    // if (this.ball.canvasY < 0) {
-    //   this.ball.dy = -this.ball.dy;
-    //   this.playAudioBeatBall();
-    // }
-    // if (this.ball.canvasY + this.ball.canvasHeight > this.ctx.canvas.height) {
-    //   //clearTimeout(this.IDtimer);
-    //   cancelAnimationFrame(this.IDtimer);
-    //   alert('GAME OVER');
-    //   return;
-    // }
-    //
-    // // encounter with bricks
-    // for (let i = 0; i < this.bricks.length; i++) {
-    //   let brick = this.bricks[i];
-    //   if (brick.visible === 0) continue;
-    //   if (this.ball.canvasX > brick.canvasX && this.ball.canvasX < brick.canvasX + brick.canvasWidth &&
-    //     this.ball.canvasY > brick.canvasY && this.ball.canvasY < brick.canvasY + brick.canvasHeight) {
-    //     this.ball.dy = -this.ball.dy;
-    //     brick.visible = 0;
-    //     this.playAudioBeatBrick();
-    //   }
-    // }
-    //
-    // // encounter with platform
-    // if (this.ball.canvasX > this.platform.canvasX && this.ball.canvasX < this.platform.canvasX + this.platform.canvasWidth &&
-    //   this.ball.canvasY + this.ball.canvasHeight > this.platform.canvasY &&
-    //   this.ball.canvasY + this.ball.canvasHeight < this.platform.canvasY + this.platform.canvasHeight) {
-    //   this.ball.dy = -this.ball.dy;
-    //   this.playAudioBeatBall();
-    // }
-    //
-    // this.ball.canvasX += this.ball.dx;
-    // this.ball.canvasY += this.ball.dy;
-    //
-    // this.renderGame();
-    // this.IDtimer = requestAnimationFrame(() => this.moveBall());
-    // //this.IDtimer = setTimeout(() => this.moveBall(), 25);
+    if (e.keyCode === 32) {
+      game.bird.fly = 1;
+      game.bird.canvasY -= 100;
+    }
+  }
+
+  birdDown(e) {
+    if (e.keyCode === 32) {
+      game.bird.fly = 0;
+    }
   }
 
   playAudioBeatBrick() {
@@ -150,6 +141,6 @@ game.BIRD_IMG.onload = function() {
   game.BACKGROUND_IMG.onload = function() {
     game.createGame();
     game.createBird();
-    game.renderGame();
+    game.moveGame();
   }
 }
