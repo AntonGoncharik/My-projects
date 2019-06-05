@@ -88,20 +88,26 @@ class Game {
     game.ctx.clearRect(0, 0, game.ctx.canvas.width, game.ctx.canvas.height);
 
     // render background
-    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080, -game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
-    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080, game.SCREEN_WIDTH - game.widthSecondFrame - 5, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
-    if (Math.abs(game.widthSecondFrame) > game.SCREEN_WIDTH) {
-      game.widthSecondFrame = 0;
-    }
+    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
+      -game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
+      game.SCREEN_WIDTH - game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+
     if (Date.now() - game.previousTimeFrame > game.timeDelayFrame) {
       game.previousTimeFrame = Date.now();
       game.widthSecondFrame += game.scrollingFrame;
     }
 
+    if (Math.abs(game.widthSecondFrame) > game.SCREEN_WIDTH) {
+      game.widthSecondFrame = 0;
+    }
+
+
     // render bird
     game.ctx.drawImage(game.BIRD_IMG, game.bird.currentFrame * game.bird.imgWidth, 0,
       game.bird.imgWidth, game.bird.imgHeight, game.bird.canvasX, game.bird.canvasY,
       game.bird.canvasWidth, game.bird.canvasHeight);
+
     if (Date.now() - game.bird.previousTimeFrame > game.bird.timeDelayFrame) {
       game.bird.previousTimeFrame = Date.now();
       game.bird.currentFrame++;
@@ -129,10 +135,12 @@ class Game {
     }
   }
 
-  playAudioBeatBrick() {
-    // let audio = new Audio();
-    // audio.src = '/E:/html, css, js/JS/arkanoid canvas/audio/song_beat_brick.mp3';
-    // audio.play();
+  playAudioTheme() {
+    let audio = new Audio();
+    audio.src = '../audio/theme_audio.mp3';
+    audio.onloadeddata = function() {
+      audio.play();
+    }
   }
 }
 
@@ -142,5 +150,6 @@ game.BIRD_IMG.onload = function() {
     game.createGame();
     game.createBird();
     game.moveGame();
+    game.playAudioTheme();
   }
 }
