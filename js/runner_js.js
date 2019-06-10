@@ -96,90 +96,88 @@ class Game {
       game.cactus.canvasX = game.ctx.canvas.width;
     }
 
-    // check touch floor
-    if (game.bird.canvasY + game.bird.canvasHeight - 20 > game.ctx.canvas.height) {
-      return;
-    }
-    if (game.bird.fly !== 1) {
-      game.bird.canvasY += 10;
-    }
+    // encounter with cactus
+    if (game.bird.canvasX + game.bird.canvasWidth - 80 > game.cactus.canvasX &&
+      game.bird.canvasX + game.bird.canvasWidth - 80 < game.cactus.canvasX + game.cactus.canvasWidth) {
+        alert(1);
+      }
 
-    // encounter with wall
-    // if (this.ball.canvasX + this.ball.canvasWidth > this.ctx.canvas.width || this.ball.canvasX < 0) {
-    //   this.ball.dx = -this.ball.dx;
-    //   this.playAudioBeatBall();
-    // }
+      // check touch floor
+      if (game.bird.canvasY + game.bird.canvasHeight - 20 > game.ctx.canvas.height) {
+        return;
+      }
+      if (game.bird.fly !== 1) {
+        game.bird.canvasY += 10;
+      }
 
-    // if (this.ball.canvasY + this.ball.canvasHeight > this.ctx.canvas.height) {
-    //   //clearTimeout(this.IDtimer);
-    //   cancelAnimationFrame(this.IDtimer);
-    //   alert('GAME OVER');
-    //   return;
-    // }
 
-  }
+      //   cancelAnimationFrame(this.IDtimer);
+      //   return;
+      // }
 
-  renderGame() {
-    // clear canvas
-    game.ctx.clearRect(0, 0, game.ctx.canvas.width, game.ctx.canvas.height);
-
-    // render background
-    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
-      -game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
-    game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
-      game.SCREEN_WIDTH - game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
-
-    // render bird
-    game.ctx.drawImage(game.BIRD_IMG, game.bird.currentFrame * game.bird.imgWidth, 0,
-      game.bird.imgWidth, game.bird.imgHeight, game.bird.canvasX, game.bird.canvasY,
-      game.bird.canvasWidth, game.bird.canvasHeight);
-
-    // render cactus
-    game.ctx.drawImage(game.CACTUS_IMG, game.cactus.imgX, game.cactus.imgY,
-      game.cactus.imgWidth, game.cactus.imgHeight, game.cactus.canvasX, game.cactus.canvasY,
-      game.cactus.canvasWidth, game.cactus.canvasHeight);
-
-  }
-
-  birdUp(e) {
-    if (game.bird.canvasY - 40 < 0) {
-      return;
     }
 
-    if (e.keyCode === 32) {
-      game.bird.fly = 1;
-      game.bird.canvasY -= 100;
+    renderGame() {
+      // clear canvas
+      game.ctx.clearRect(0, 0, game.ctx.canvas.width, game.ctx.canvas.height);
+
+      // render background
+      game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
+        -game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+      game.ctx.drawImage(game.BACKGROUND_IMG, 165, 0, 1920, 1080,
+        game.SCREEN_WIDTH - game.widthSecondFrame, 0, game.SCREEN_WIDTH, game.SCREEN_HEIGHT);
+
+      // render bird
+      game.ctx.drawImage(game.BIRD_IMG, game.bird.currentFrame * game.bird.imgWidth, 0,
+        game.bird.imgWidth, game.bird.imgHeight, game.bird.canvasX, game.bird.canvasY,
+        game.bird.canvasWidth, game.bird.canvasHeight);
+
+      // render cactus
+      game.ctx.drawImage(game.CACTUS_IMG, game.cactus.imgX, game.cactus.imgY,
+        game.cactus.imgWidth, game.cactus.imgHeight, game.cactus.canvasX, game.cactus.canvasY,
+        game.cactus.canvasWidth, game.cactus.canvasHeight);
+
+    }
+
+    birdUp(e) {
+      if (game.bird.canvasY - 40 < 0) {
+        return;
+      }
+
+      if (e.keyCode === 32) {
+        game.bird.fly = 1;
+        game.bird.canvasY -= 100;
+      }
+    }
+
+    birdDown(e) {
+      if (e.keyCode === 32) {
+        game.bird.fly = 0;
+      }
+    }
+
+    playAudioTheme() {
+      // let audio = new Audio();
+      // audio.src = '../audio/theme_audio.mp3';
+      // audio.onloadeddata = function() {
+      //   audio.play();
+      // }
     }
   }
 
-  birdDown(e) {
-    if (e.keyCode === 32) {
-      game.bird.fly = 0;
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  let game = new Game();
+  game.BIRD_IMG.onload = function() {
+    game.BACKGROUND_IMG.onload = function() {
+      game.CACTUS_IMG.onload = function() {
+        game.createGame();
+        game.createBird();
+        game.createCactus();
+        game.moveGame();
+        game.playAudioTheme();
+      }
     }
   }
-
-  playAudioTheme() {
-    // let audio = new Audio();
-    // audio.src = '../audio/theme_audio.mp3';
-    // audio.onloadeddata = function() {
-    //   audio.play();
-    // }
-  }
-}
-
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
-
-let game = new Game();
-game.BIRD_IMG.onload = function() {
-  game.BACKGROUND_IMG.onload = function() {
-    game.CACTUS_IMG.onload = function() {
-      game.createGame();
-      game.createBird();
-      game.createCactus();
-      game.moveGame();
-      game.playAudioTheme();
-    }
-  }
-}
