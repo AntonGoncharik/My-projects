@@ -99,7 +99,7 @@ class Game {
     // encounter with cactus
     if (game.bird.canvasX + game.bird.canvasWidth - 80 > game.cactus.canvasX &&
       game.bird.canvasX + game.bird.canvasWidth - 80 < game.cactus.canvasX + game.cactus.canvasWidth) {
-        alert(1);
+      //  alert(1);
       }
 
       // check touch floor
